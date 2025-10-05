@@ -1,0 +1,13 @@
+echo "venv/
+__pycache__/
+*.h5
+*.keras
+*.zip
+*.rar
+data/
+checkpoints/
+extracted_images/
+formula_images/
+math_model/
+mathwriting-2024/
+" > .gitignore
