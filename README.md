@@ -66,4 +66,115 @@ The goal is to provide a robust solution for digitizing handwritten formulas, en
 
 
 ## 🗂️ Project Structure
+.
+├── app.py # Streamlit web app (Approach 2)
+├── train_approach2.py # Training script for advanced model
+├── train_approach1.py # Training script for baseline model
+├── predict_approach1.py # Prediction script (Approach 1)
+├── eda.ipynb # Exploratory Data Analysis
+├── vocab.txt # Vocabulary for Approach 2
+├── requirements.txt # Python dependencies
+├── training_checkpoints/ # Saved model weights (Approach 2)
+├── math_model/ # Saved model weights (Approach 1)
+├── extracted_images/ # Segmented characters (Approach 1)
+├── formula_images/ # Full formula dataset (Approach 2)
+├── image/ # Sample input images
+└── README.md
 
+
+---
+
+## ⚙️ Setup & Installation
+
+### 1. Clone the Repository
+
+git clone <your-repository-url>
+cd <repository-name>
+
+2. Create a Virtual Environment
+python -m venv venv
+source venv/bin/activate  
+# On Windows: venv\Scripts\activate
+
+3. Install Dependencies
+pip install -r requirements.txt
+
+
+💡 If you don’t have requirements.txt, create one:
+
+pip freeze > requirements.txt
+
+4. Download Data & Models
+
+Approach 1 Data: extracted_images/ → segmented character images
+
+Approach 2 Data: formula_images/ → CROHME or custom dataset
+
+Model Checkpoints: Place trained weights and vocab.txt in root directory.
+
+🚀 Usage
+1. Running Approach 1 (Baseline)
+
+Predict characters from an image:
+
+python predict_approach1.py --image_path "image/image1.jpg"
+
+2. Running Approach 2 (Advanced)
+a) Using Streamlit Web App (Recommended)
+streamlit run app.py
+
+
+Then open your browser → upload handwritten formula → get LaTeX → calculate result.
+
+b) Using Command-Line Prediction
+python train_approach2.py --mode predict --image_path "image/formula.png"
+
+
+Or use a dedicated predict_approach2.py script if available.
+
+3. Training (Optional)
+
+Train baseline:
+
+python train_approach1.py
+
+
+Train advanced model:
+
+python train_approach2.py
+
+📊 Results & Performance
+Approach 1 (Baseline)
+
+✅ Output Example:
+Input: y² + Ny₁ + 1 = N
+Output: y2+Ny1+1=N
+
+⚠️ Limitation:
+Struggles with 2D math structures; only linear character predictions.
+
+Approach 2 (Advanced - Image-to-LaTeX)
+Metric	Score
+Exact Match Rate	9.50%
+Character Error Rate	80.17%
+BLEU Score	0.0142
+
+✅ Output Example: \frac{d}{dt}N_{2}
+
+📈 Analysis:
+Demonstrates learning of LaTeX grammar and 2D layouts via attention.
+Further training expected to reduce CER and improve accuracy.
+
+🔮 Future Work
+
+Train Approach 2 longer on larger dataset for better convergence.
+
+Apply data augmentation (stroke thickness, noise, deformation).
+
+Try Transformer-based decoders for long-range dependency modeling.
+
+Implement beam search for improved predictions.
+
+Strengthen baseline segmentation and CNN pipeline.
+
+Develop an error analysis visualization tool.
