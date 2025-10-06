@@ -1,4 +1,4 @@
-# ✍️➡️🧮 Handwritten Math Recognition
+# ✍️➡️🧮 Handwritten Mathematical Expression Recognition
 
 This project explores different deep learning approaches to translate images of handwritten mathematical expressions into digital formats.  
 It implements two distinct methodologies:  
