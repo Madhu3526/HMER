@@ -64,26 +64,6 @@ The goal is to provide a robust solution for digitizing handwritten formulas, en
 | Metrics | Scikit-learn, NLTK (BLEU) |
 
 
-
-## 🗂️ Project Structure
-.
-├── app.py # Streamlit web app (Approach 2)
-├── train_approach2.py # Training script for advanced model
-├── train_approach1.py # Training script for baseline model
-├── predict_approach1.py # Prediction script (Approach 1)
-├── eda.ipynb # Exploratory Data Analysis
-├── vocab.txt # Vocabulary for Approach 2
-├── requirements.txt # Python dependencies
-├── training_checkpoints/ # Saved model weights (Approach 2)
-├── math_model/ # Saved model weights (Approach 1)
-├── extracted_images/ # Segmented characters (Approach 1)
-├── formula_images/ # Full formula dataset (Approach 2)
-├── image/ # Sample input images
-└── README.md
-
-
----
-
 ## ⚙️ Setup & Installation
 
 ### 1. Clone the Repository
