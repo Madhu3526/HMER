@@ -1,65 +1,102 @@
-# ✍️➡️🧮 Handwritten Mathematical Expression Recognition
+### Handwritten Mathematical Expression Recognition
 
-This project explores different deep learning approaches to translate images of handwritten mathematical expressions into digital formats.  
-It implements two distinct methodologies:  
-- a **baseline character-level classification system**, and  
-- an **advanced end-to-end image-to-sequence model with attention**.
+# Project Overview
 
-The goal is to provide a robust solution for digitizing handwritten formulas, enhancing their searchability, accessibility, and archival.
+This project focuses on converting handwritten mathematical expressions into digital LaTeX using three different machine learning approaches:
 
----
+     -> Multi-Layer Perceptron (MLP) – Baseline character classifier
+     -> Basic Convolutional Neural Network (CNN) – Stronger character-level OCR
+     -> Encoder–Decoder with Attention (ResNet50V2 + LSTM) – End-to-end Image-to-LaTeX model
 
-## 🌟 Features
+# Dataset: MathWriting (Derived from CROHME)
 
-### 🧩 Two Distinct Approaches Implemented
+Total Samples: ~4,45,538 mathematical expressions
 
-#### **Approach 1 (Baseline - Character Classification)**
-- Utilizes classic computer vision (OpenCV) for contour detection and character segmentation.  
-- Employs a simple Convolutional Neural Network (CNN) for individual character classification.  
-- Outputs a linear string of predicted characters.
+Source Format: InkML (converted to PNG)
 
-#### **Approach 2 (Advanced - Image-to-LaTeX End-to-End)**
-- Translates entire handwritten formula images into LaTeX code directly.  
-- Leverages an Encoder-Decoder architecture with **Bahdanau Attention**.  
-- **Transfer Learning:** Uses pre-trained **ResNet50V2** for visual feature extraction.  
-- **Two-Phase Training:** Combines frozen encoder training with fine-tuning.  
-- Handles 2D structural complexities (fractions, exponents, integrals, etc.).  
-- Includes evaluation metrics: **Character Error Rate**, **Exact Match Rate**, **BLEU Score**.  
-- Interactive **Streamlit Web App** for:
-  - Uploading handwritten images  
-  - Predicting LaTeX formulas  
-  - Dynamically entering variable values  
-  - Computing results using **SymPy**
+Input: PNG images of handwritten formulas
 
----
+Output: Ground-truth LaTeX sequence
 
-## 🧠 Model Architecture (Approach 2)
+Character Vocabulary (MLP/CNN): 82 classes
 
-### **Encoder (ResNet50V2)**
-- Pre-trained on ImageNet for powerful feature extraction.  
-- Converts input (224×224×3) into a rich feature map (7×7×2048).  
-- Early layers frozen initially, then fine-tuned later.
+LaTeX Vocabulary (Seq2Seq): 64,000+ unique tokens
 
-### **Attention Mechanism (Bahdanau)**
-- Allows the decoder to focus on the most relevant parts of the image dynamically.  
-- Essential for parsing spatially complex mathematical layouts.
+# Approach 1 — Multi-Layer Perceptron (MLP)
 
-### **Decoder (LSTM)**
-- Generates LaTeX tokens one at a time (autoregressive generation).  
-- Uses embeddings of previous tokens and attention context vectors.
+A segmentation-based pipeline for isolated character recognition.
 
----
+🔹 Workflow
 
-## 🧰 Technology Stack
+Binarization using adaptive thresholding
 
-| Category | Tools / Libraries |
-|-----------|------------------|
-| Backend | Python 3.9+ |
-| Deep Learning | TensorFlow, Keras |
-| Computer Vision | OpenCV |
-| Web Interface | Streamlit |
-| Math Parsing | SymPy |
-| Data Handling | NumPy, Pandas |
-| Visualization | Matplotlib, Seaborn, Pillow |
-| Metrics | Scikit-learn, NLTK (BLEU) |
+Character extraction using cv2.findContours
 
+Cropping + resizing to 45×45
+
+Flattening to a 2025-dim vector
+
+MLP classification
+
+🔹 Model
+
+2025 → 256 → 128 → 82
+
+ReLU activations + Dropout
+
+🔹 Performance
+
+✔ ~98% accuracy on isolated characters
+❌ Fails for full 2D mathematical structure
+
+# Approach 2 — Basic CNN
+
+Improved character-level OCR using convolutional feature extraction.
+
+🔹 Architecture
+
+3× Conv2D(32, 3×3) + MaxPooling
+
+Dense(128) → Dense(82)
+
+🔹 Performance
+
+✔ ~95% accuracy
+❌ Still segmentation-based → cannot understand fractions, roots, superscripts
+
+# Approach 3 — Encoder–Decoder with Attention (Final Model)
+
+A complete Image-to-LaTeX deep learning system.
+
+🔹 Encoder
+
+ResNet50V2 pretrained on ImageNet
+
+Extracts high-level 2D spatial features
+
+🔹 Attention
+
+Bahdanau Attention highlights relevant spatial regions at each decoding step
+
+🔹 Decoder
+
+LSTM generating LaTeX token-by-token
+
+Vocabulary size: 64k+ tokens
+
+🔹 Training
+
+5 epochs (feature extraction)
+
+3 epochs (fine-tuning)
+
+Final Training Loss: 0.538
+
+Validation Loss: 0.870
+
+🔹 Evaluation
+
+Exact Match Rate (EMR): 9.50%
+
+Character Error Rate (CER): 80.17%
+(Low EMR but demonstrates strong structural understanding; under-trained due to model complexity)
