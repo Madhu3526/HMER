@@ -1,6 +1,6 @@
-### Handwritten Mathematical Expression Recognition
+# Handwritten Mathematical Expression Recognition
 
-# Project Overview
+## Project Overview
 
 This project focuses on converting handwritten mathematical expressions into digital LaTeX using three different machine learning approaches:
 
@@ -8,7 +8,7 @@ This project focuses on converting handwritten mathematical expressions into dig
      -> Basic Convolutional Neural Network (CNN) – Stronger character-level OCR
      -> Encoder–Decoder with Attention (ResNet50V2 + LSTM) – End-to-end Image-to-LaTeX model
 
-# Dataset: MathWriting (Derived from CROHME)
+## Dataset: MathWriting (Derived from CROHME)
 
 Total Samples: ~4,45,538 mathematical expressions
 
@@ -22,7 +22,7 @@ Character Vocabulary (MLP/CNN): 82 classes
 
 LaTeX Vocabulary (Seq2Seq): 64,000+ unique tokens
 
-# Approach 1 — Multi-Layer Perceptron (MLP)
+## Approach 1 — Multi-Layer Perceptron (MLP)
 
 A segmentation-based pipeline for isolated character recognition.
 
@@ -49,7 +49,7 @@ ReLU activations + Dropout
 ✔ ~98% accuracy on isolated characters
 ❌ Fails for full 2D mathematical structure
 
-# Approach 2 — Basic CNN
+## Approach 2 — Basic CNN
 
 Improved character-level OCR using convolutional feature extraction.
 
@@ -64,7 +64,7 @@ Dense(128) → Dense(82)
 ✔ ~95% accuracy
 ❌ Still segmentation-based → cannot understand fractions, roots, superscripts
 
-# Approach 3 — Encoder–Decoder with Attention (Final Model)
+## Approach 3 — Encoder–Decoder with Attention (Final Model)
 
 A complete Image-to-LaTeX deep learning system.
 
