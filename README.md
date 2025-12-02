@@ -1,102 +1,86 @@
-# Handwritten Mathematical Expression Recognition
+# 📝 Handwritten Mathematical Expression Recognition
 
 ## Project Overview
+This project focuses on converting handwritten mathematical expressions into digital **LaTeX** using three progressively advanced machine learning approaches:
 
-This project focuses on converting handwritten mathematical expressions into digital LaTeX using three different machine learning approaches:
+- **Multi-Layer Perceptron (MLP)** – Baseline character classifier  
+- **Basic Convolutional Neural Network (CNN)** – Stronger character-level OCR  
+- **Encoder–Decoder with Attention (ResNet50V2 + LSTM)** – End-to-end Image-to-LaTeX model  
 
-     -> Multi-Layer Perceptron (MLP) – Baseline character classifier
-     -> Basic Convolutional Neural Network (CNN) – Stronger character-level OCR
-     -> Encoder–Decoder with Attention (ResNet50V2 + LSTM) – End-to-end Image-to-LaTeX model
+---
 
-## Dataset: MathWriting (Derived from CROHME)
+## 📂 Dataset: MathWriting (Derived from CROHME)
 
-Total Samples: ~4,45,538 mathematical expressions
+- **Total Samples:** ~4,45,538 handwritten mathematical expressions  
+- **Source Format:** InkML (converted to PNG)  
+- **Input:** PNG images of handwritten formulas  
+- **Output:** Ground-truth LaTeX formula  
+- **Character Vocabulary (MLP/CNN):** 82 unique classes  
+- **LaTeX Vocabulary (Seq2Seq):** 64,000+ unique tokens  
 
-Source Format: InkML (converted to PNG)
+---
 
-Input: PNG images of handwritten formulas
+## 🔧 Approach 1 — Multi-Layer Perceptron (MLP)
 
-Output: Ground-truth LaTeX sequence
+A segmentation-based pipeline designed for isolated character recognition.
 
-Character Vocabulary (MLP/CNN): 82 classes
+### 🔹 Workflow
+- Binarization using *adaptive thresholding*  
+- Character extraction using **cv2.findContours**  
+- Cropping & resizing characters to **45 × 45**  
+- Flattening to a **2025-dimensional vector**  
+- Classification using MLP  
 
-LaTeX Vocabulary (Seq2Seq): 64,000+ unique tokens
-
-## Approach 1 — Multi-Layer Perceptron (MLP)
-
-A segmentation-based pipeline for isolated character recognition.
-
-🔹 Workflow
-
-Binarization using adaptive thresholding
-
-Character extraction using cv2.findContours
-
-Cropping + resizing to 45×45
-
-Flattening to a 2025-dim vector
-
-MLP classification
-
-🔹 Model
-
+### 🔹 Model Architecture
 2025 → 256 → 128 → 82
+(ReLU activations + Dropout layers)
 
-ReLU activations + Dropout
 
-🔹 Performance
+### 🔹 Performance
+- ✔ Achieved **~98% accuracy** on isolated characters  
+- ❌ Cannot model 2D math structure (fractions, roots, superscripts)  
 
-✔ ~98% accuracy on isolated characters
-❌ Fails for full 2D mathematical structure
+---
 
-## Approach 2 — Basic CNN
+## 🔧 Approach 2 — Basic CNN
 
 Improved character-level OCR using convolutional feature extraction.
 
-🔹 Architecture
+### 🔹 Architecture
+- 3 × `Conv2D(32, 3×3)` + MaxPooling  
+- Fully connected: `Dense(128) → Dense(82)`  
 
-3× Conv2D(32, 3×3) + MaxPooling
+### 🔹 Performance
+- ✔ Achieved **~95% accuracy**  
+- ❌ Still segmentation-based → fails for full mathematical expressions  
 
-Dense(128) → Dense(82)
+---
 
-🔹 Performance
+## 🔧 Approach 3 — Encoder–Decoder with Attention (Final Model)
 
-✔ ~95% accuracy
-❌ Still segmentation-based → cannot understand fractions, roots, superscripts
+A complete **Image-to-LaTeX** deep learning system with end-to-end learning.
 
-## Approach 3 — Encoder–Decoder with Attention (Final Model)
+### 🔹 Encoder
+- **ResNet50V2** pretrained on ImageNet  
+- Extracts high-level 2D spatial features  
 
-A complete Image-to-LaTeX deep learning system.
+### 🔹 Attention
+- **Bahdanau Attention**  
+- Focuses on relevant image regions during token generation  
 
-🔹 Encoder
+### 🔹 Decoder
+- **LSTM** generating LaTeX tokens sequentially  
+- Vocabulary size: **64k+ tokens**  
 
-ResNet50V2 pretrained on ImageNet
+### 🔹 Training
+- **5 epochs** – Encoder feature extraction  
+- **3 epochs** – Fine-tuning  
+- **Training Loss:** 0.538  
+- **Validation Loss:** 0.870  
 
-Extracts high-level 2D spatial features
+### 🔹 Evaluation
+- **Exact Match Rate (EMR):** 9.50%  
+- **Character Error Rate (CER):** 80.17%  
+> *Despite low EMR due to dataset complexity, the model successfully learns spatial structure and generates structurally meaningful LaTeX expressions.*
 
-🔹 Attention
-
-Bahdanau Attention highlights relevant spatial regions at each decoding step
-
-🔹 Decoder
-
-LSTM generating LaTeX token-by-token
-
-Vocabulary size: 64k+ tokens
-
-🔹 Training
-
-5 epochs (feature extraction)
-
-3 epochs (fine-tuning)
-
-Final Training Loss: 0.538
-
-Validation Loss: 0.870
-
-🔹 Evaluation
-
-Exact Match Rate (EMR): 9.50%
-
-Character Error Rate (CER): 80.17%
-(Low EMR but demonstrates strong structural understanding; under-trained due to model complexity)
+---
